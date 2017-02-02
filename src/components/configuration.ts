@@ -7,11 +7,11 @@ export class Configuration {
   }
 
   public wdLocationApiUrl() : string {
-    return 'https://walkingdog-services.herokuapp.com/api/location';
+    return 'https://walkingdog-services-int.herokuapp.com/api/location';
   }
 
   public wdAuthenticationApiUrl() : string {
-    return 'https://walkingdog-services.herokuapp.com/api/authentication';
+    return 'https://walkingdog-services-int.herokuapp.com/api/authentication';
   }
 
 }
