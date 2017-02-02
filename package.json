@@ -1,7 +1,7 @@
 {
   "name": "walkingdog",
-  "author": "paoesco",
-  "homepage": "https://github.com/paoesco/walkingdog",
+  "author": "hubesco",
+  "homepage": "https://github.com/Hubesco/walkingdog-mobile",
   "private": true,
   "scripts": {
     "clean": "ionic-app-scripts clean",
@@ -41,5 +41,5 @@
     "ionic-plugin-keyboard"
   ],
   "cordovaPlatforms": [],
-  "description": "Walking Dog: An Ionic project"
+  "description": "Walking Dog"
 }
