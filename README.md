@@ -43,17 +43,19 @@ Walking Dog
 - `ionic platform add ios` (inside walkingdog-mobile folder)
 
 
-### Build
+### Build & run
 
-- `ionic serve`
-- for prod mode : `` (https://github.com/driftyco/ionic-app-scripts/blob/master/CHANGELOG.md#entry-point-changes)
+- `ionic serve` to see app working on web browser
+= `ionic lab` to see app working on emulator in web browser
 
 #### Android
 
 - `ionic build android`
-- `ionic emulate android` (needs AVD up and running)
+- `ionic emulate android -l -c -s` (needs AVD up and running)
 - For prod mode, add prod param : `ionic run android --prod`
 
 #### iOS
 
-// TBC
+- `ionic build ios`
+- `ionic emulate ios -l -c -s`
+- For prod mode, add prod param : `ionic run ios --prod`

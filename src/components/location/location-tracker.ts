@@ -78,7 +78,7 @@ export class LocationTracker {
 
       this.watch = Geolocation
       .watchPosition(options)
-      .filter((p: any) => p.code === undefined)
+      //.filter((p) => p.coords !== undefined) //Filter Out Errors
       .subscribe((position) => {
         // Runs update inside of Angular's zone
         this.zone.run(() => {
