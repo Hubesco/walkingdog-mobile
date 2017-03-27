@@ -1,5 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Geolocation, Geoposition, BackgroundGeolocation } from 'ionic-native';
+import { BackgroundGeolocation, BackgroundGeolocationConfig } from '@ionic-native/background-geolocation';
+import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { Http, Response, Headers } from '@angular/http';
 import { SecurityContextHolder,User } from '../authentication/security-context-holder';
 
@@ -8,23 +9,30 @@ import { Configuration } from '../configuration';
 @Injectable()
 export class LocationTracker {
 
-  private watch: any;    
+
   private lat: number = 0;
   private lng: number = 0;
   private tracking: boolean;
+  private watchGeolocation: any;
 
   constructor(
     private securityContextHolder: SecurityContextHolder,
     private zone: NgZone,
     private http: Http,
-    private configuration: Configuration) {
+    private configuration: Configuration,
+    private backgroundGeolocation: BackgroundGeolocation,
+    private geolocation: Geolocation) {
     this.tracking = false;
+    this.configureBackgroundGeolocation();
   }
 
   startTracking() {
     if (!this.tracking) {
-      this.backgroundTracking();
-      let promise = this.foregroundTracking();
+      // Starts background tracking
+      this.backgroundGeolocation.start();
+      // Starts foreground tracking
+      let promise = this.startGeolocation();
+      // Sets state
       this.tracking = true;
       return promise;
     } else {
@@ -34,8 +42,11 @@ export class LocationTracker {
   }
 
   stopTracking() {
-    BackgroundGeolocation.finish();
-    this.watch.unsubscribe();
+    // Stops background tracking
+    this.backgroundGeolocation.stop();
+    // Stops foreground tracking
+    this.watchGeolocation.unsubscribe();
+    // Sets state
     this.tracking = false;
   }
 
@@ -44,32 +55,36 @@ export class LocationTracker {
   }
 
   // Deals with background tracking, when app is running but not active.
-  private backgroundTracking() {
+  private configureBackgroundGeolocation() {
     // Background Tracking options
-    let config = {
+    let config: BackgroundGeolocationConfig = {
       desiredAccuracy: 10,
       stationaryRadius: 20,
-      distanceFilter: 10, 
-      interval: 15000 
+      distanceFilter: 30,
+      //debug: true, //  enable this hear sounds for background-geolocation life-cycle.
+      stopOnTerminate: false // enable this to clear background location settings when the app terminates
     };
 
-    BackgroundGeolocation
-    .configure(config)
-    .subscribe((location) => {
+    this.backgroundGeolocation.configure(config).subscribe((location) => {
       // Run update inside of Angular's zone
       this.zone.run(() => {
         this.processPosition(location);
+        // IMPORTANT:  You must execute the finish method here to inform the native plugin that you're finished,
+        // and the background-task may be completed.  You must do this regardless if your HTTP request is successful or not.
+        // IF YOU DON'T, ios will CRASH YOUR APP for spending too much time in the background.
+        this.backgroundGeolocation.finish(); // FOR IOS ONLY
       });
     }, (err) => {
       console.log(err);
+      // IMPORTANT:  You must execute the finish method here to inform the native plugin that you're finished,
+      // and the background-task may be completed.  You must do this regardless if your HTTP request is successful or not.
+      // IF YOU DON'T, ios will CRASH YOUR APP for spending too much time in the background.
+      this.backgroundGeolocation.finish(); // FOR IOS ONLY
     });
-
-    // Turn ON the background-geolocation system.
-    BackgroundGeolocation.start();
   }
 
   // Deals with foreground tracking, when app is running and active.
-  private foregroundTracking() {
+  private startGeolocation() {
 
     let promise = new Promise((resolve, reject) => {
       // Foreground Tracking options
@@ -78,7 +93,7 @@ export class LocationTracker {
         timeout: 10000
       };
 
-      this.watch = Geolocation
+      this.watchGeolocation = this.geolocation
       .watchPosition(options)
       .filter((p) => p.coords !== undefined) //Filter Out Errors
       .subscribe((position) => {

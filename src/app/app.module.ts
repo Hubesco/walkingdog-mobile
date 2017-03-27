@@ -13,10 +13,11 @@ import { ProfilePage } from '../pages/profile/profile';
 // Components
 import { SecurityContextHolder } from '../components/authentication/security-context-holder';
 import { LocationTracker } from '../components/location/location-tracker';
-import { TimerComponent } from '../components/timer/timer';
 import { Configuration } from '../components/configuration';
 // Third parties
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
+import { Geolocation } from '@ionic-native/geolocation';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -32,35 +33,36 @@ const cloudSettings: CloudSettings = {
 
 @NgModule({
   declarations: [
-    MyApp,
-    StartPage,
-    LoginPage,
-    SignupPage,
-    HomePage,
-    MapTab,
-    AboutPage,
-    ProfilePage,
-    TimerComponent
+  MyApp,
+  StartPage,
+  LoginPage,
+  SignupPage,
+  HomePage,
+  MapTab,
+  AboutPage,
+  ProfilePage
   ],
   imports: [
-    IonicModule.forRoot(MyApp),
-    CloudModule.forRoot(cloudSettings)
+  IonicModule.forRoot(MyApp),
+  CloudModule.forRoot(cloudSettings)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
-    StartPage,
-    LoginPage,
-    SignupPage,
-    HomePage,
-    MapTab,
-    AboutPage,
-    ProfilePage
+  MyApp,
+  StartPage,
+  LoginPage,
+  SignupPage,
+  HomePage,
+  MapTab,
+  AboutPage,
+  ProfilePage
   ],
   providers: [
-    LocationTracker,
-    SecurityContextHolder,
-    Configuration
+  LocationTracker,
+  SecurityContextHolder,
+  Configuration,
+  Geolocation,
+  BackgroundGeolocation
   ]
 })
 export class AppModule {}

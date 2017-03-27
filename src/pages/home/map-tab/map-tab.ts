@@ -126,75 +126,72 @@ export class MapTab {
     }
     // Creates and stores a new marker with the current position.
     let icon = null;
-    //if (!this.walking) {
-      //  icon = 'assets/icon/marker-notwalking.png';
+    this.currentUserMarker = this.addMarker("you", "You", this.locationTracker.getLat(), this.locationTracker.getLng(), icon);
+  }
+
+  private showPetsInMap() {
+    // Prepares the request
+    let params: string = [
+    `ne-lat=${this.map.getBounds().getNorthEast().lat()}`,
+    `ne-lon=${this.map.getBounds().getNorthEast().lng()}`,
+    `sw-lat=${this.map.getBounds().getSouthWest().lat()}`,
+    `sw-lon=${this.map.getBounds().getSouthWest().lng()}`
+    ].join('&');
+
+    // Sets authorization header
+    let headers = new Headers();
+    headers.append('Authorization', this.securityContextHolder.getAuthorizationHeaderValue()); 
+
+    // Sends request to backend
+    this.http.request(`${this.configuration.wdLocationApiUrl()}/dogsAround?${params}`, {headers : headers})
+    .subscribe((res: Response) => {
+      // Removes previous markers
+      for (let marker of this.petsAroundMarkers) {
+        marker.setMap(null);
+      }
+      // Clears array
+      this.petsAroundMarkers = []; 
+      // Creates new markers
+      for (let pet of res.json()) {
+        if (pet.userUuid !== this.securityContextHolder.getCurrentUser().getUuid()) { // Filters the marker of the user
+          // Adds new marker
+          let marker = this.addMarker(
+            pet.userUuid, 
+            pet.name, 
+            pet.latitude, 
+            pet.longitude, 'assets/icon/marker-pets.png');
+          // Keeps reference of created marker
+          this.petsAroundMarkers.push(marker);
+        }
+      }
+    });
+  }
+
+  private addMarker(dogId: string, dogName: string, lat: number, lng : number, iconUrl: string): any {
+    let currentPosition = {lat: lat, lng: lng};
+    //let icon = {
+      //scaledSize: new google.maps.Size(32, 32), // scaled size
+      //  url: iconUrl // url
       //}
-      this.currentUserMarker = this.addMarker("you", "You", this.locationTracker.getLat(), this.locationTracker.getLng(), icon);
+
+      let marker = new google.maps.Marker({
+        map: this.map,
+        //animation: google.maps.Animation.DROP,
+        position: currentPosition,
+        icon: iconUrl
+      });
+      let content = `<h4>${dogName}</h4>`;          
+      this.addInfoWindow(marker, content);
+      return marker;
     }
 
-    private showPetsInMap() {
-      // Prepares the request
-      let params: string = [
-      `ne-lat=${this.map.getBounds().getNorthEast().lat()}`,
-      `ne-lon=${this.map.getBounds().getNorthEast().lng()}`,
-      `sw-lat=${this.map.getBounds().getSouthWest().lat()}`,
-      `sw-lon=${this.map.getBounds().getSouthWest().lng()}`
-      ].join('&');
-
-      // Sets authorization header
-      let headers = new Headers();
-      headers.append('Authorization', this.securityContextHolder.getAuthorizationHeaderValue()); 
-
-      // Sends request to backend
-      this.http.request(`${this.configuration.wdLocationApiUrl()}/dogsAround?${params}`, {headers : headers})
-      .subscribe((res: Response) => {
-        // Removes previous markers
-        for (let marker of this.petsAroundMarkers) {
-          marker.setMap(null);
-        }
-        // Clears array
-        this.petsAroundMarkers = []; 
-        // Creates new markers
-        for (let pet of res.json()) {
-          if (pet.userUuid !== this.securityContextHolder.getCurrentUser().getUuid()) { // Filters the marker of the user
-            // Adds new marker
-            let marker = this.addMarker(
-              pet.userUuid, 
-              pet.name, 
-              pet.latitude, 
-              pet.longitude, 'assets/icon/marker-pets.png');
-            // Keeps reference of created marker
-            this.petsAroundMarkers.push(marker);
-          }
-        }
+    private addInfoWindow(marker, content){
+      let infoWindow = new google.maps.InfoWindow({
+        content: content
+      });
+      google.maps.event.addListener(marker, 'click', () => {
+        infoWindow.open(this.map, marker);
       });
     }
 
-    private addMarker(dogId: string, dogName: string, lat: number, lng : number, iconUrl: string): any {
-      let currentPosition = {lat: lat, lng: lng};
-      //let icon = {
-        //scaledSize: new google.maps.Size(32, 32), // scaled size
-        //  url: iconUrl // url
-        //}
-
-        let marker = new google.maps.Marker({
-          map: this.map,
-          //animation: google.maps.Animation.DROP,
-          position: currentPosition,
-          icon: iconUrl
-        });
-        let content = `<h4>${dogName}</h4>`;          
-        this.addInfoWindow(marker, content);
-        return marker;
-      }
-
-      private addInfoWindow(marker, content){
-        let infoWindow = new google.maps.InfoWindow({
-          content: content
-        });
-        google.maps.event.addListener(marker, 'click', () => {
-          infoWindow.open(this.map, marker);
-        });
-      }
-
-    }
+  }
