@@ -53,14 +53,16 @@ export class LocationTracker {
       interval: 15000 
     };
 
-    BackgroundGeolocation.configure((location) => {
+    BackgroundGeolocation
+    .configure(config)
+    .subscribe((location) => {
       // Run update inside of Angular's zone
       this.zone.run(() => {
         this.processPosition(location);
       });
     }, (err) => {
       console.log(err);
-    }, config);
+    });
 
     // Turn ON the background-geolocation system.
     BackgroundGeolocation.start();
@@ -78,7 +80,7 @@ export class LocationTracker {
 
       this.watch = Geolocation
       .watchPosition(options)
-      //.filter((p) => p.coords !== undefined) //Filter Out Errors
+      .filter((p) => p.coords !== undefined) //Filter Out Errors
       .subscribe((position) => {
         // Runs update inside of Angular's zone
         this.zone.run(() => {
