@@ -1,7 +1,7 @@
 
 <ion-header>
 	<ion-navbar color="secondary">
-		<ion-title>Sign Up with Email</ion-title>
+		<ion-title>Sign up with email</ion-title>
 	</ion-navbar>
 </ion-header>
 
@@ -13,26 +13,37 @@
 
 			<h4>About you</h4>
 			<ion-item>
-				<ion-label fixed>Email</ion-label>
+				<ion-label floating>Email</ion-label>
 				<ion-input type="email" [formControl]="signupForm.controls['email']"></ion-input>
 			</ion-item>
 
 			<ion-item>
-				<ion-label fixed>Password</ion-label>
+				<ion-label floating>Password</ion-label>
 				<ion-input type="password" [formControl]="signupForm.controls['password']"></ion-input>
 			</ion-item>
 
+			<ion-item>
+				<ion-label floating>Confirm password</ion-label>
+				<ion-input type="password" [formControl]="signupForm.controls['password_confirm']"></ion-input>
+			</ion-item>
+
+			<ion-item class='form-text error' *ngIf="signupForm.controls.password_confirm.touched && signupForm.hasError('mismatchedPasswords') && signupForm.controls.password.valid">
+				<ion-label no-margin stacked>Passwords do not match</ion-label>
+			</ion-item>
+
 			<h4>About your dog</h4>
-			<button ion-button (click)="presentActionSheet()">Choose a picture...</button>
-			<img src="{{pathForImage(lastImage)}}" style="width: 100%" [hidden]="lastImage === null">
+
+			<img [src]="signupForm.controls['dogBase64Image'].value" *ngIf="signupForm.controls['dogBase64Image'].value">
+			<button ion-button full color="light" *ngIf="!signupForm.controls['dogBase64Image'].value" (click)="takePicture()">Choose a picture</button>
+			<button ion-button full color="light" *ngIf="signupForm.controls['dogBase64Image'].value" (click)="takePicture()">Change picture</button>
 
 			<ion-item>
-				<ion-label fixed>Name</ion-label>
+				<ion-label floating>Name</ion-label>
 				<ion-input type="text" [formControl]="signupForm.controls['dogName']"></ion-input>
 			</ion-item>
 
 			<ion-item>
-				<ion-label>Gender</ion-label>
+				<ion-label floating>Gender</ion-label>
 				<ion-select [formControl]="signupForm.controls['dogGender']">
 					<ion-option value="FEMALE">Female</ion-option>
 					<ion-option value="MALE">Male</ion-option>
@@ -40,7 +51,7 @@
 			</ion-item>
 
 			<ion-item>
-				<ion-label>Breed</ion-label>
+				<ion-label floating>Breed</ion-label>
 				<ion-select [formControl]="signupForm.controls['dogBreed']">
 					<ion-option value="AFFENPINSCHER">Affenpinscher</ion-option>
 					<ion-option value="AFGHAN_HOUND">Afghan Hound</ion-option>
@@ -245,7 +256,7 @@
 			</ion-item>
 
 			<ion-item>
-				<ion-label>Birthdate</ion-label>
+				<ion-label floating>Birthdate</ion-label>
 				<ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="DD MM YYYY" [formControl]="signupForm.controls['dogBirthdate']"></ion-datetime>
 			</ion-item>
 

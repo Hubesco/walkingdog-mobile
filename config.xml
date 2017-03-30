@@ -2,7 +2,7 @@
 <widget id="com.hubesco.software.walkingdog" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Walking Dog</name>
     <description>Walking with friendly dogs around me</description>
-    <author email="walkingdog@hubesco.com" href="https://github.com/paoesco/walkingdog">paoesco</author>
+    <author email="walkingdog@hubesco.com" href="https://github.com/hubesco/walkingdog-mobile">hubesco</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -35,15 +35,9 @@
         <variable name="ALWAYS_USAGE_DESCRIPTION" value="This app requires background tracking enabled" />
     </plugin>
     <plugin name="cordova-plugin-inappbrowser" spec="~1.5.0" />
-    <plugin name="cordova-plugin-googleplus" spec="~5.1.1">
-        <variable name="REVERSED_CLIENT_ID" value="NON_AVAILABLE" />
-    </plugin>
     <allow-navigation href="http://localhost:8100" />
     <plugin name="cordova-plugin-device" spec="~1.1.4" />
     <plugin name="cordova-plugin-statusbar" spec="~2.2.1" />
     <plugin name="cordova-plugin-geolocation" spec="~2.4.1" />
     <plugin name="cordova-plugin-camera" spec="~2.3.1" />
-    <plugin name="cordova-plugin-file" spec="~4.3.1" />
-    <plugin name="cordova-plugin-file-transfer" spec="~1.6.1" />
-    <plugin name="cordova-plugin-filepath" spec="~1.0.2" />
 </widget>

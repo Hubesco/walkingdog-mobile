@@ -12,31 +12,31 @@ import { SecurityContextHolder } from '../components/authentication/security-con
 @Component({
   template: `
   <ion-menu [content]="content" *ngIf="securityContext.isAuthenticated()">
-    <ion-header>
-      <ion-toolbar color="secondary">
-        <ion-title>Menu</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content>
-      <ion-list>
-        <button menuClose ion-item icon-left (click)="openPage(homePage)">
-          <ion-icon name="paw"></ion-icon>
-          Dogs around
-        </button>
-        <button menuClose ion-item icon-left (click)="openPage(profilePage)">
-          <ion-icon name="person"></ion-icon>
-          Profile
-        </button>
-        <a href="mailto:?subject=Checkout Walking Dog app&body=to change" ion-item icon-left>
-          <ion-icon name="share"></ion-icon>
-          Share app
-        </a>
-        <button menuClose ion-item icon-left (click)="openPage(aboutPage)">
-          <ion-icon name="information-circle"></ion-icon>
-          About & feedback
-        </button>
-      </ion-list>
-    </ion-content>
+  <ion-header>
+  <ion-toolbar color="secondary">
+  <ion-title>Menu</ion-title>
+  </ion-toolbar>
+  </ion-header>
+  <ion-content>
+  <ion-list>
+  <button menuClose ion-item icon-left (click)="openPage(homePage)">
+  <ion-icon name="paw"></ion-icon>
+  Dogs around
+  </button>
+  <button menuClose ion-item icon-left (click)="openPage(profilePage)">
+  <ion-icon name="person"></ion-icon>
+  Profile
+  </button>
+  <a href="mailto:?subject=Checkout Walking Dog app&body=to change" ion-item icon-left>
+  <ion-icon name="share"></ion-icon>
+  Share app
+  </a>
+  <button menuClose ion-item icon-left (click)="openPage(aboutPage)">
+  <ion-icon name="information-circle"></ion-icon>
+  About & feedback
+  </button>
+  </ion-list>
+  </ion-content>
   </ion-menu>
 
   <ion-nav #rootNavController #content [root]="rootPage" swipeBackEnabled="false"></ion-nav>

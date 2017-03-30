@@ -18,16 +18,11 @@ import { Configuration } from '../components/configuration';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 import { Geolocation } from '@ionic-native/geolocation';
+import { Camera } from '@ionic-native/camera';
 
 const cloudSettings: CloudSettings = {
   'core': {
     'app_id': '66a0a8f6'
-  },
-  'auth': {
-    'google': {
-      'webClientId': '112751394957-bji8or17opkmn66ukqsm00q7312p1ml8.apps.googleusercontent.com',
-      'scope': ['email', 'public_profile']
-    }
   }
 };
 
@@ -62,7 +57,8 @@ const cloudSettings: CloudSettings = {
   SecurityContextHolder,
   Configuration,
   Geolocation,
-  BackgroundGeolocation
+  BackgroundGeolocation,
+  Camera
   ]
 })
 export class AppModule {}

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { NavController,LoadingController,ActionSheetController,Platform } from 'ionic-angular';
+import { NavController,LoadingController,AlertController,Platform } from 'ionic-angular';
 import { FormBuilder,FormGroup,Validators } from '@angular/forms';
 import { StartPage } from '../start/start';
 import { Http, Response } from '@angular/http';
-import { Camera, File, Transfer, FilePath } from 'ionic-native';
+import { Camera, CameraOptions } from '@ionic-native/camera';
 
 import { Configuration } from '../../components/configuration';
 
@@ -16,34 +16,35 @@ declare var cordova: any;
 export class SignupPage {
 
 	signupForm: FormGroup;
-	lastImage: string = null;
 
 	constructor( 
 		private loadingCtrl: LoadingController,
 		private navCtrl: NavController,
 		private http: Http,
 		private configuration: Configuration,
-		public actionSheetCtrl: ActionSheetController,
+		private alertCtrl: AlertController,
+		private camera: Camera,
 		private platform: Platform,
 		fb: FormBuilder) {
 
 		this.signupForm = fb.group({
 			'email': ['', Validators.required],
 			'password': ['', Validators.required],
+			'password_confirm': ['', Validators.required],
+			'dogBase64Image': [''],
 			'dogName': ['', Validators.required],
 			'dogGender': ['', Validators.required],
 			'dogBreed': ['', Validators.required],
 			'dogBirthdate': ['', Validators.required]
-		});
+		}, {validator: this.matchingPasswords('password', 'password_confirm')});
 	}
 
 	ionViewDidLoad() {
 	}
 
 	signup(form: any) {
-		// Recreated every time we need it to fix https://github.com/driftyco/ionic/issues/6209
 		let loader = this.loadingCtrl.create({
-			content: "Please wait..."
+			content: "Uploading data..."
 		});
 		loader.present();
 		if (form.valid) {
@@ -53,7 +54,12 @@ export class SignupPage {
 			.subscribe((res: Response) => {
 				if (res.status == 201) {
 					loader.dismiss();
-					alert('An e-mail has been sent. Please confirm you e-mail address before log in.');
+					let alert = this.alertCtrl.create({
+						title: 'You are subscribed !',
+						subTitle: 'An e-mail has been sent to activate your account. Check your spam box if it does not appear in your Inbox',
+						buttons: ['OK']
+					});
+					alert.present();
 					this.navCtrl.setRoot(StartPage);
 				} 
 
@@ -61,104 +67,59 @@ export class SignupPage {
 			(err:Response) => {
 				if (err.status == 400) {
 					loader.dismiss();
-					alert('E-mail address already exists. Please use another one.');
+					let alert = this.alertCtrl.create({
+						title: 'Email already exists',
+						subTitle: 'An account with the same email already exists. Please use another email.',
+						buttons: ['OK']
+					});
+					alert.present();
 					return false;
 				} else {
 					loader.dismiss();
-					alert('Sorry, an error occured. Please come back later');
+					let alert = this.alertCtrl.create({
+						title: 'Error',
+						subTitle: 'Sorry, an error occured. Please try again later.',
+						buttons: ['OK']
+					});
+					alert.present();
 					return false;
 				}
 			});
 		} else {
 			loader.dismiss();
-			alert('Required fields : email, password, dog name, dog gender, dog breed, dog birthdate');
+			//alert('Required fields : email, password, dog name, dog gender, dog breed, dog birthdate');
 			return false;
 		}
 
 	}
 
-	presentActionSheet() {
-		let actionSheet = this.actionSheetCtrl.create({
-			buttons: [
-			{
-				text: 'Use camera',
-				icon: 'camera',
-				handler: () => {
-					this.takePicture(Camera.PictureSourceType.CAMERA);
-				}
-			},{
-				text: 'Load from library',
-				icon: 'folder',
-				handler: () => {
-					this.takePicture(Camera.PictureSourceType.PHOTOLIBRARY);
-				}
-			},{
-				text: 'Cancel',
-				icon: 'close',
-				role: 'cancel',
-				handler: () => {
-					
-				}
+	matchingPasswords(passwordKey: string, confirmPasswordKey: string) {
+		return (group: FormGroup): {[key: string]: any} => {
+			let password = group.controls[passwordKey];
+			let confirmPassword = group.controls[confirmPasswordKey];
+
+			if (password.value !== confirmPassword.value) {
+				return {
+					mismatchedPasswords: true
+				};
 			}
-			]
-		});
-		actionSheet.present();
-		return false;
-	}
-
-	// https://devdactic.com/ionic-2-images/
-	public takePicture(sourceType) {
-		// Create options for the Camera Dialog
-		var options = {
-			quality: 100,
-			sourceType: sourceType,
-			saveToPhotoAlbum: false,
-			correctOrientation: true
-		};
-
-		// Get the data of an image
-		Camera.getPicture(options).then((imagePath) => {
-			// Special handling for Android library
-			if (this.platform.is('android') && sourceType === Camera.PictureSourceType.PHOTOLIBRARY) {
-				FilePath.resolveNativePath(imagePath)
-				.then(filePath => {
-					var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
-					var correctPath = filePath.substr(0, imagePath.lastIndexOf('/') + 1);
-					this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
-				});
-			} else {
-				var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
-				var correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
-				this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
-			}
-		}, (err) => {
-			alert('Error while selecting image.');
-		});
-	}
-
-	// Create a new name for the image
-	private createFileName() {
-		let d = new Date();
-		return d.getTime() + ".jpg";
-	}
-
-	// Copy the image to a local folder
-	private copyFileToLocalDir(namePath, currentName, newFileName) {
-		alert(namePath + ' ' + currentName + ' ' + newFileName);
-		File.copyFile(namePath, currentName, cordova.file.dataDirectory, newFileName).then(success => {
-			this.lastImage = newFileName;
-		}, error => {
-			alert('Error while storing file.');
-		});
-	}
-
-	// Always get the accurate path to your apps folder
-	public pathForImage(img) {
-		if (img === null) {
-			return '';
-		} else {
-			return cordova.file.dataDirectory + img;
 		}
+	}
+
+	takePicture() {
+		const options: CameraOptions = {
+			quality: 100,
+			destinationType: this.camera.DestinationType.DATA_URL,
+			encodingType: this.camera.EncodingType.JPEG,
+			mediaType: this.camera.MediaType.PICTURE,
+		}
+		this.camera.getPicture(options).then((imageData) => {
+			// imageData is either a base64 encoded string or a file URI
+			// If it's base64:
+			this.signupForm.controls['dogBase64Image'].setValue('data:image/jpeg;base64,' + imageData);
+		}, (err) => {
+			// Handle error
+		});
 	}
 
 }
