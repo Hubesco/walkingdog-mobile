@@ -1,10 +1,5 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { LoadingController } from 'ionic-angular';
-import { Auth as IonicAuth } from '@ionic/cloud-angular';
-import { GoogleAuth, User as GoogleUser } from '@ionic/cloud-angular';
-
-import { FormBuilder,FormGroup } from '@angular/forms';
 
 import { LoginPage } from '../login/login'
 import { SignupPage } from '../signup/signup'
@@ -25,45 +20,15 @@ import { SecurityContextHolder } from '../../components/authentication/security-
   })
   export class StartPage {
 
-    //segments: string;
-    loader: any;
-    loginForm: FormGroup;
-    //signupForm: FormGroup;
-
     constructor(
       private securityContextHolder: SecurityContextHolder,
-      private ionicAuth: IonicAuth, 
-      private googleAuth: GoogleAuth,
-      private googleUser: GoogleUser,
-      private loadingCtrl: LoadingController,
-      private navCtrl: NavController,
-      fb: FormBuilder) {
-
+      private navCtrl: NavController) {
       if (this.securityContextHolder.isAuthenticated()) {
         this.navCtrl.setRoot(HomePage);
       }
-
-      this.loader = this.loadingCtrl.create({
-        content: "Please wait..."
-      });
-
     }
 
     ionViewDidLoad() {
-    }
-
-    buttonLoginWithGoogle() {
-      this.googleAuth.login().then( () =>{
-        alert('Logged in with Google');
-        this.navCtrl.setRoot(HomePage);
-      });
-    }
-
-    buttonLoginWithFacebook() {
-      this.ionicAuth.login('facebook').then( () =>{
-        alert('Logged in with Facebook');
-        this.navCtrl.setRoot(HomePage);
-      });
     }
 
     buttonLogin() {
