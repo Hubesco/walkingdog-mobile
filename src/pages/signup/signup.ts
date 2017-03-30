@@ -112,13 +112,19 @@ export class SignupPage {
 			destinationType: this.camera.DestinationType.DATA_URL,
 			encodingType: this.camera.EncodingType.JPEG,
 			mediaType: this.camera.MediaType.PICTURE,
+			targetHeight: 1000,
+			targetWidth: 1000
 		}
 		this.camera.getPicture(options).then((imageData) => {
 			// imageData is either a base64 encoded string or a file URI
 			// If it's base64:
-			this.signupForm.controls['dogBase64Image'].setValue('data:image/jpeg;base64,' + imageData);
+			let base64Image = 'data:image/jpeg;base64,' + imageData;
+			this.signupForm.controls['dogBase64Image'].setValue(base64Image);
+			let cameraImageSelector = document.getElementById('dogImage');
+      cameraImageSelector.setAttribute('src', base64Image);
 		}, (err) => {
 			// Handle error
+			console.log(err);
 		});
 	}
 

@@ -33,7 +33,7 @@
 
 			<h4>About your dog</h4>
 
-			<img [src]="signupForm.controls['dogBase64Image'].value" *ngIf="signupForm.controls['dogBase64Image'].value">
+			<img id="dogImage" />
 			<button ion-button full color="light" *ngIf="!signupForm.controls['dogBase64Image'].value" (click)="takePicture()">Choose a picture</button>
 			<button ion-button full color="light" *ngIf="signupForm.controls['dogBase64Image'].value" (click)="takePicture()">Change picture</button>
 
