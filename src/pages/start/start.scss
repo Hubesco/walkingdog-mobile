@@ -10,22 +10,6 @@ page-start {
 		padding-top: 50px;
 	}
 
-	ion-content.content, ion-content.content-md {
-		color: white;
-		background-color: #BCF5A9;
-	}
-
-	.buttonTransparent {
-		background-color: transparent;
-		border: 1px black solid;
-		color: black;
-	}
-
-	.buttonTransparent:hover, .buttonTransparent.activated {
-		background-color: black !important;
-		color: white;
-	}
-
 	h6 {
 		text-align: center;
 	}
