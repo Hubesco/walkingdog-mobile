@@ -8,36 +8,31 @@
 </ion-header>
 
 <ion-content>
-  <img src="assets/dogs/shiba.jpg" width="100%" height="40%">
+  <img [src]="domSanitizer.bypassSecurityTrustUrl(currentUser.getDogBase64Image())" width="100%" height="40%">
   <h2>
-    Hyumiko
+    {{ currentUser.getDogName() }}
   </h2>
   <ion-list no-lines>
     <ion-item>
-      <ion-icon name="female" item-left></ion-icon>
-      Female
+      <ion-icon name="female" *ngIf="currentUser.dogGender === 'FEMALE'" item-left></ion-icon>
+      <ion-icon name="male" *ngIf="currentUser.dogGender === 'MALE'" item-left></ion-icon>
+      {{ currentUser.getDogGenderLabel() }}
     </ion-item>
     <ion-item>
       <ion-icon name="paw" item-left></ion-icon>
-      Shiba Inu
+      {{ currentUser.getDogBreedLabel() }}
     </ion-item>
     <ion-item>
       <ion-icon name="calendar" item-left></ion-icon>
-      17/03/2015
+      {{ currentUser.getDogBirthDate() | date: 'yyyy-MM-dd' }}
       <ion-note item-right>
-        1,5 years
+        {{ getAge(currentUser.getDogBirthDate()) }} {{ getAge(currentUser.getDogBirthDate()) === 0 || getAge(currentUser.getDogBirthDate()) === 1 ? 'year' : 'years' }}
       </ion-note>
     </ion-item>
     <ion-item-divider color="light">About you</ion-item-divider>
     <ion-item>
       <ion-icon name="mail" item-left></ion-icon>
-      a@a.com
+      {{ currentUser.email }}
     </ion-item>
   </ion-list>
-
-  <ion-fab center bottom>
-    <button ion-fab color="dark">
-      <ion-icon name="create"></ion-icon>
-    </button>
-  </ion-fab>
 </ion-content>

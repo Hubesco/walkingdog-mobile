@@ -108,12 +108,12 @@ export class SignupPage {
 
 	takePicture() {
 		const options: CameraOptions = {
-			quality: 100,
+			quality: 50,
 			destinationType: this.camera.DestinationType.DATA_URL,
 			encodingType: this.camera.EncodingType.JPEG,
 			mediaType: this.camera.MediaType.PICTURE,
-			targetHeight: 1000,
-			targetWidth: 1000
+			targetHeight: 800,
+			targetWidth: 800
 		}
 		this.camera.getPicture(options).then((imageData) => {
 			// imageData is either a base64 encoded string or a file URI

@@ -26,6 +26,7 @@ export class SecurityContextHolder {
       json.email,
       json.dogUuid,
       json.dogName,
+      json.dogBase64Image,
       json.dogGender,
       json.dogBreed,
       json.dogBirthdate,
@@ -48,6 +49,7 @@ export class User {
     private email: string,
     private dogUuid: string,
     private dogName: string,
+    private dogBase64Image: string,
     private dogGender: string,
     private dogBreed: string,
     private dogBirthDate: string,
@@ -68,12 +70,36 @@ export class User {
     return this.uuid;
   }
 
+  public getDogUuid(): string {
+    return this.uuid;
+  }
+
   public getDogName(): string {
     return this.dogName;
   }
 
-  public getDogUuid(): string {
-    return this.uuid;
+  public getDogBase64Image(): string {
+    return this.dogBase64Image;
+  }
+
+  public getDogGender(): string {
+    return this.dogGender;
+  }
+
+  public getDogGenderLabel(): string {
+    return this.capitalizeFirstLetter(this.getDogGender().toLowerCase());
+  }
+
+  public getDogBreed(): string {
+    return this.dogBreed;
+  }
+
+  public getDogBreedLabel(): string {
+    return this.capitalizeFirstLetter(this.getDogBreed().toLowerCase().replace('_',' '));
+  }
+
+  public getDogBirthDate(): string {
+    return this.dogBirthDate;
   }
 
   public getJwtToken(): string {
@@ -88,6 +114,10 @@ export class User {
   public stop(): boolean {
     this.walking = false;
     return this.isWalking();
+  }
+
+  private capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
 }
