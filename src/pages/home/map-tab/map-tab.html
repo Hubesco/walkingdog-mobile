@@ -18,20 +18,25 @@
 
   <div #map id="map"></div>
 
-  <ion-fab center bottom *ngIf="!walking">
+  <ion-fab center bottom *ngIf="!walking && isTracking()">
     <button ion-fab color="secondary" (click)="buttonStartWalk()">
       <ion-icon name="walk"></ion-icon>
     </button>
   </ion-fab>
-  <ion-fab center bottom *ngIf="walking">
+  <ion-fab center bottom *ngIf="walking && isTracking()">
     <button ion-fab color="danger" (click)="buttonStopWalk()">
       <ion-icon name="close"></ion-icon>
     </button>
   </ion-fab>
 
-  <ion-fab right bottom>
+  <ion-fab right bottom *ngIf="isTracking()">
     <button ion-fab color="light" (click)="buttonLocateMe()">
     	<ion-icon name="locate"></ion-icon>
+    </button>
+  </ion-fab>
+  <ion-fab right bottom *ngIf="!isTracking()">
+    <button ion-fab color="light" (click)="refresh()">
+      <ion-icon name="refresh"></ion-icon>
     </button>
   </ion-fab>
 

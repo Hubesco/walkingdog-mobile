@@ -1,6 +1,5 @@
 import { Component,ViewChild,ElementRef } from '@angular/core';
-import { LoadingController } from 'ionic-angular';
-import { NavController } from 'ionic-angular';
+import { AlertController,NavController,ToastController } from 'ionic-angular';
 import { Http, Response, Headers } from '@angular/http';
 import { LocationTracker } from '../../../components/location/location-tracker';
 import { SecurityContextHolder } from '../../../components/authentication/security-context-holder';
@@ -24,19 +23,17 @@ export class MapTab {
   currentUserMarker: any;
   // Stores the markers of pets around
   petsAroundMarkers: Array<any>;
-
-  private loader: any;
-
   walking: boolean;
+  toast: any;
 
   constructor(
     private navCtrl: NavController, 
     private http: Http,
-    private loadingCtrl: LoadingController,
     private locationTracker: LocationTracker,
     private securityContextHolder: SecurityContextHolder,
-    private configuration: Configuration
-    ) {
+    private alertCtrl: AlertController,
+    private configuration: Configuration,
+    private toastCtrl: ToastController) {
     this.petsAroundMarkers = [];
     this.walking = this.securityContextHolder.getCurrentUser().isWalking();
   }
@@ -47,18 +44,10 @@ export class MapTab {
   // https://github.com/driftyco/ionic-conference-app/blob/master/src/pages/map/map.ts
 
   ionViewDidLoad() {
-    this.loader = this.loadingCtrl.create({
-      content: "Loading current position..."
-    });
-    this.loader.present();
-
     // Loads Google Map
     this.loadMap();
-    // Starts tracking of the user
-    this.locationTracker.startTracking().then(() => {
-      this.init();
-      this.loader.dismiss();
-    });
+    // After we've got the position, we init process
+    this.init();
   }
 
   // Called by locate me button to center the map on user location
@@ -70,32 +59,73 @@ export class MapTab {
 
   buttonStartWalk() {
     this.walking = this.securityContextHolder.getCurrentUser().walk();
-    this.updateMyLocation();
+    this.updateMyMarker();
   }
 
   buttonStopWalk() {
     this.walking = this.securityContextHolder.getCurrentUser().stop();
-    this.updateMyLocation();
+    this.updateMyMarker();
+  }
+
+  refresh() {
+    this.init();
+  }
+
+  isTracking() {
+    return this.locationTracker.isTracking();
+  }
+
+  private presentLoadingMessage() {
+    // Friendly message
+    this.toast = this.toastCtrl.create({
+      message: 'Loading current position...',
+      position: 'middle'
+    });
+    // Shows loading message
+    this.toast.present();
+    // Waits for 10 seconds
+    setTimeout(() => {
+      if (!this.isTracking()) {
+        this.toast.dismiss();
+        this.presentNoGeolocationMessage();
+      }
+    }, 10000);
+  }
+
+  private presentNoGeolocationMessage() {
+    let alert = this.alertCtrl.create({
+      title: 'Unable to find you',
+      subTitle: 'The app could not locate you. Please hit refresh button to try again.',
+      buttons: ['OK']
+    });
+    alert.present();
   }
 
   private init() {
-    // Centers the map on the user current position.
-    let currentPosition = new google.maps.LatLng(this.locationTracker.getLat(), this.locationTracker.getLng());
-    this.map.setCenter(currentPosition);
-    // Adds marker on current user position
-    this.currentUserMarker = this.addMarker("you", "You", this.locationTracker.getLat(), this.locationTracker.getLng(), null);
-    // Deals with current user location
-    this.updateMyLocation();
-    // Find dogs around
-    this.showPetsInMap();
-    // Refresh map every 10 seconds
-    setInterval(() => {
-      // Deals with current user location
-      this.updateMyLocation();
+    // Shows a message to the user saying that app is searching location
+    this.presentLoadingMessage();
+    // Starts tracking of the user
+    this.locationTracker.startTracking().then(() => {
+      // Removes loading message
+      this.toast.dismiss();
+      // Centers the map on the user current position.
+      let currentPosition = new google.maps.LatLng(this.locationTracker.getLat(), this.locationTracker.getLng());
+      this.map.setCenter(currentPosition);
+      // Updates user position
+      this.updateMyMarker();
       // Find dogs around
       this.showPetsInMap();
-    }, 10000);
-
+      // Refresh map every 10 seconds
+      setInterval(() => {
+        // Updates user position
+        this.updateMyMarker();
+        // Find dogs around
+        this.showPetsInMap();
+      }, 10000);
+    }).catch(() => {
+      this.toast.dismiss();
+      this.presentNoGeolocationMessage();
+    });
 
   }
 
@@ -119,7 +149,7 @@ export class MapTab {
     });
   }
 
-  private updateMyLocation() {
+  private updateMyMarker() {
     // Removes previous user location
     if (this.currentUserMarker) {
       this.currentUserMarker.setMap(null);
