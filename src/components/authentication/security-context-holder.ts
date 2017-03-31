@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
+import { Configuration } from '../configuration';
 
 @Injectable()
 export class SecurityContextHolder {
 
   private currentUser: User;
 
-  constructor() {
+  constructor(
+    private configuration: Configuration) {
     if (localStorage.getItem('currentUser') != null) {
       this.setCurrentUser(JSON.parse(localStorage.getItem('currentUser')));
     }
@@ -71,7 +73,7 @@ export class User {
   }
 
   public getDogUuid(): string {
-    return this.uuid;
+    return this.dogUuid;
   }
 
   public getDogName(): string {

@@ -14,4 +14,8 @@ export class Configuration {
     return 'https://walkingdog-services-int.herokuapp.com/api/authentication';
   }
 
+  public wdProfileApiUrl() : string {
+    return 'https://walkingdog-services-int.herokuapp.com/api/profile';
+  }
+
 }

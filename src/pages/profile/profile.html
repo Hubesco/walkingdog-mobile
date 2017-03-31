@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content>
-  <img [src]="domSanitizer.bypassSecurityTrustUrl(currentUser.getDogBase64Image())" width="100%" height="40%">
+  <img [src]="domSanitizer.bypassSecurityTrustUrl(dogImage)" width="100%" height="40%">
   <h2>
     {{ currentUser.getDogName() }}
   </h2>

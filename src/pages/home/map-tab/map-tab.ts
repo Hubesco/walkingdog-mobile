@@ -156,7 +156,12 @@ export class MapTab {
     }
     // Creates and stores a new marker with the current position.
     let icon = null;
-    this.currentUserMarker = this.addMarker("you", "You", this.locationTracker.getLat(), this.locationTracker.getLng(), icon);
+    this.currentUserMarker = this.addMarker(
+      this.securityContextHolder.getCurrentUser().getUuid(),
+      this.securityContextHolder.getCurrentUser().getDogUuid(), 
+      this.securityContextHolder.getCurrentUser().getDogName(), 
+      this.locationTracker.getLat(), 
+      this.locationTracker.getLng(), icon);
   }
 
   private showPetsInMap() {
@@ -186,10 +191,12 @@ export class MapTab {
         if (pet.userUuid !== this.securityContextHolder.getCurrentUser().getUuid()) { // Filters the marker of the user
           // Adds new marker
           let marker = this.addMarker(
-            pet.userUuid, 
-            pet.name, 
+            pet.userUuid,
+            pet.dogUuid, 
+            pet.dogName, 
             pet.latitude, 
-            pet.longitude, 'assets/icon/marker-pets.png');
+            pet.longitude, 
+            'assets/icon/marker-pets.png');
           // Keeps reference of created marker
           this.petsAroundMarkers.push(marker);
         }
@@ -197,7 +204,7 @@ export class MapTab {
     });
   }
 
-  private addMarker(dogId: string, dogName: string, lat: number, lng : number, iconUrl: string): any {
+  private addMarker(userUuid: string, dogUuid: string, dogName: string, lat: number, lng : number, iconUrl: string): any {
     let currentPosition = {lat: lat, lng: lng};
     //let icon = {
       //scaledSize: new google.maps.Size(32, 32), // scaled size
@@ -210,6 +217,7 @@ export class MapTab {
         position: currentPosition,
         icon: iconUrl
       });
+      //<img src="${this.configuration.wdProfileApiUrl() + '/' + userUuid + '/dogs/' + dogUuid + '/image'}">
       let content = `<h4>${dogName}</h4>`;          
       this.addInfoWindow(marker, content);
       return marker;

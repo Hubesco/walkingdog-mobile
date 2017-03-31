@@ -116,6 +116,7 @@ export class LocationTracker {
       `${this.configuration.wdLocationApiUrl()}/register`,
       JSON.stringify({
         userUuid: currentUser.getUuid(), 
+        dogUuid: currentUser.getDogUuid(),
         dogName: currentUser.getDogName(),
         latitude: this.lat,
         longitude: this.lng,
