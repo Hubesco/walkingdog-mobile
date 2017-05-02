@@ -2,6 +2,8 @@
 import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpModule } from '@angular/http';
 // Pages
 import { StartPage } from '../pages/start/start';
 import { LoginPage } from '../pages/login/login';
@@ -38,6 +40,8 @@ const cloudSettings: CloudSettings = {
   ProfilePage
   ],
   imports: [
+  BrowserModule,
+  HttpModule,
   IonicModule.forRoot(MyApp),
   CloudModule.forRoot(cloudSettings)
   ],
