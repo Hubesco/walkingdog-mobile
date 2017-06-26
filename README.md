@@ -46,16 +46,6 @@ Walking Dog
 ### Build & run
 
 - `ionic serve` to see app working on web browser
-= `ionic lab` to see app working on emulator in web browser
-
-#### Android
-
-- `ionic build android`
-- `ionic emulate android -l -c -s` (needs AVD up and running)
-- For prod mode, add prod param : `ionic run android --prod`
-
-#### iOS
-
-- `ionic build ios`
-- `ionic emulate ios -l -c -s`
-- For prod mode, add prod param : `ionic run ios --prod`
+- `ionic lab` to see app working on emulator in web browser
+- `ionic cordova build --help` to create a build
+- `ionic cordova build ios|android --prod` to create a prod build
