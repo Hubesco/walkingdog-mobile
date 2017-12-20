@@ -1,17 +1,35 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Home</ion-title>
+    <ion-title>
+      Home
+    </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
+<ion-content>
+  <ion-list>
+    <ion-list-header>
+      DOGS AROUND ME
+    </ion-list-header>
+
+    <ion-item *ngFor="let dog of dogsAround">
+      <ion-avatar item-start>
+        <img [src]="dog.imgUrl">
+      </ion-avatar>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-12><h2>{{ dog.name }}</h2></ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-6><h3>{{ dog.breed }}</h3></ion-col>
+          <ion-col col-6 text-right><a (click)="viewDog(dog.uuid)">View</a></ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-12 class="rate"><p>{{ dog.rate | number : '1.1-1' }} <ion-icon name="star"></ion-icon></p></ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+
+  </ion-list>
+
 </ion-content>

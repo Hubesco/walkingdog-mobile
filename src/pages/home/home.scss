@@ -1,3 +1,22 @@
 page-home {
 
+  .grid {
+    padding: 0;
+  }
+
+  .col {
+    padding: 0;
+  }
+  .rate ion-icon {
+    color: #CCCC00;
+  }
+
+  a {
+    cursor: pointer;
+  }
+
+  ion-list, ion-list-header {
+    border-bottom: 1px solid #dedede;
+  }
+
 }
