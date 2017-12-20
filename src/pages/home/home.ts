@@ -33,6 +33,7 @@ export class HomePage {
 
   viewDog(uuid) {
     console.log(uuid);
+    alert('Coming soon!');
   }
 
 }

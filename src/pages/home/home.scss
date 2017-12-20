@@ -15,6 +15,10 @@ page-home {
     cursor: pointer;
   }
 
+  .list-header {
+    margin-bottom: 0;
+  }
+
   ion-list, ion-list-header {
     border-bottom: 1px solid #dedede;
   }
