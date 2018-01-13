@@ -16,18 +16,10 @@
       <ion-avatar item-start>
         <img [src]="dog.imgUrl">
       </ion-avatar>
-      <ion-grid>
-        <ion-row>
-          <ion-col col-12><h2>{{ dog.name }}</h2></ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col col-6><h3>{{ dog.breed }}</h3></ion-col>
-          <ion-col col-6 text-right><a (click)="viewDog(dog.uuid)">View</a></ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col col-12 class="rate"><p>{{ dog.rate | number : '1.1-1' }} <ion-icon name="star"></ion-icon></p></ion-col>
-        </ion-row>
-      </ion-grid>
+      <h2>{{ dog.name }}</h2>
+      <h3>{{ dog.breed }}</h3>
+      <p>{{ dog.rate | number : '1.1-1' }} <ion-icon name="star" class="rate"></ion-icon></p>
+      <button ion-button clear item-end (click)="viewDog(dog.uuid)">View</button>
     </ion-item>
 
   </ion-list>

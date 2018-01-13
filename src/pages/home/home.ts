@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { LoadingController } from 'ionic-angular';
+
+import { DogsServiceProvider, Dog } from '../../providers/dogs-service/dogs-service';
+import { AuthenticationServiceProvider } from '../../providers/authentication-service/authentication-service';
 
 @Component({
   selector: 'page-home',
@@ -9,26 +13,29 @@ export class HomePage {
 
   dogsAround: Array<Dog>;
 
-  constructor(public navCtrl: NavController) {
-    this.loadDogs();
-  }
-
-  private loadDogs() {
+  constructor(
+    public navCtrl: NavController,
+    public loadingCtrl: LoadingController,
+    private dogsService: DogsServiceProvider,
+    private authService: AuthenticationServiceProvider) {
     this.dogsAround = new Array<Dog>();
-    let hyumiko: Dog = new Dog();
-    hyumiko.uuid = "1";
-    hyumiko.name = "Hyumiko";
-    hyumiko.breed = "Shiba Inu"
-    hyumiko.rate = 5.0;
-    hyumiko.imgUrl = "assets/imgs/avatar-shiba.jpg"
-    this.dogsAround.push(hyumiko);
-    let reveur: Dog = new Dog();
-    reveur.uuid = "2";
-    reveur.name = "Reveur";
-    reveur.breed = "Teckel"
-    reveur.rate = 5.0;
-    reveur.imgUrl = "assets/imgs/avatar-teckel.jpg";
-    this.dogsAround.push(reveur);
+    let loader = this.loadingCtrl.create({
+      content: "Please wait..."
+    });
+    loader.present();
+    this.authService.getCurrentUser()
+    .then(user => {
+      return this.dogsService.getDogsAround(user.uuid);
+    })
+    .then(data => {
+      this.dogsAround = data;
+      loader.dismiss();
+    })
+    .catch(err => {
+      console.log(err);
+      loader.dismiss();
+      alert('Sorry, we couldn\'t load the data. Please retry later.');
+    })    
   }
 
   viewDog(uuid) {
@@ -38,10 +45,3 @@ export class HomePage {
 
 }
 
-class Dog {
-  uuid: string;
-  name: string;
-  breed: string;
-  rate: number;
-  imgUrl: string;
-}
